@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JMprint creates sharp, memorable print for brands that mean business.">
+    <title>JMprint | Precision printing for brands in motion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { display: ['"Space Grotesk"', 'sans-serif'], body: ['"DM Sans"', 'sans-serif'] }, colors: { ink: '#101828', cyanx: '#087f8c', yellowx: '#ffd447', paper: '#f7f8f5' } } } };</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="styles.css?v=2">
+</head>
+
+<body class="bg-paper text-ink font-body">
+    <header data-site-header></header>
+    <main>
+        <section class="hero-home relative min-h-[680px] overflow-hidden text-white">
+            <video class="hero-video absolute inset-0 h-full w-full object-cover" autoplay muted loop playsinline
+                preload="auto" poster="assests/jmprint-hero-poster.jpg"
+                aria-hidden="true">
+                <source src="assests/jmprint-hero.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay absolute inset-0"></div>
+            <div class="relative z-10 mx-auto flex min-h-[680px] max-w-7xl items-end px-6 pb-20 pt-32 lg:px-10">
+                <div class="max-w-3xl animate-rise">
+                    <p class="eyebrow mb-6 text-yellowx">Print with intent / Since 2012</p>
+                    <h1
+                        class="font-display text-5xl font-semibold leading-[.98] tracking-[-.0a5em] sm:text-7xl lg:text-8xl">
+                        Make your mark<br><span class="text-yellowx">in full color.</span></h1>
+                    <p class="mt-7 max-w-xl text-lg leading-8 text-white/75">Precision printing for brands in motion.
+                        From a single launch piece to a full campaign, we make every sheet count.</p>
+                    <div class="mt-10 flex flex-wrap gap-4"><a href="quote.html" class="button button-yellow">Get a
+                            quote <span>↗</span></a><a href="portfolio.html" class="button button-ghost">See our
+                            work</a></div>
+                </div>
+                <div
+                    class="absolute bottom-8 right-6 hidden max-w-[190px] border-l border-white/30 pl-4 text-sm text-white/65 lg:block">
+                    <span class="mb-2 block text-2xl text-yellowx">01—</span>Good ideas deserve a good finish.</div>
+            </div>
+        </section>
+        <section class="mx-auto max-w-7xl px-6 py-24 lg:px-10">
+            <div class="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+                <div>
+                    <p class="eyebrow text-cyanx">What we do</p>
+                    <h2 class="section-title mt-3">From first draft<br>to final impression.</h2>
+                </div><a href="services.html" class="arrow-link">Explore all services <span>↗</span></a>
+            </div>
+            <div class="grid gap-px overflow-hidden border border-ink/10 bg-ink/10 md:grid-cols-3">
+                <article class="service-tile bg-white p-8"><span class="number">01</span>
+                    <div class="icon-mark">✦</div>
+                    <h3>Design &amp; layout</h3>
+                    <p>Polished layouts for cards, flyers, banners, CVs, research, theses, and graduation projects.</p><a
+                        href="services.html#design">Learn more <span>↗</span></a>
+                </article>
+                <article class="service-tile bg-white p-8"><span class="number">02</span>
+                    <div class="icon-mark">◫</div>
+                    <h3>Digital printing</h3>
+                    <p>Dependable printing for business cards, flyers, banners, documents, and everyday brand
+                        materials.</p><a href="services.html#printing">Learn more <span>↗</span></a>
+                </article>
+                <article class="service-tile bg-white p-8"><span class="number">03</span>
+                    <div class="icon-mark">▧</div>
+                    <h3>Binding &amp; finishing</h3>
+                    <p>Clean professional finishing for books, reports, theses, graduation projects, and research.</p><a
+                        href="services.html#binding">Learn more <span>↗</span></a>
+                </article>
+            </div>
+        </section>
+        <section class="bg-ink px-6 py-24 text-white lg:px-10">
+            <div class="mx-auto max-w-7xl">
+                <div class="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+                    <div>
+                        <p class="eyebrow text-yellowx">Selected work</p>
+                        <h2 class="section-title mt-3 text-white">Printed things,<br>proudly made.</h2>
+                    </div><a href="portfolio.html" class="arrow-link text-white">View full portfolio <span>↗</span></a>
+                </div>
+                <div id="featured-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
+            </div>
+        </section>
+        <section class="mx-auto max-w-7xl px-6 py-24 lg:px-10" aria-labelledby="studio-gallery-title">
+            <div class="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+                <div>
+                    <p class="eyebrow text-cyanx">A closer look</p>
+                    <h2 id="studio-gallery-title" class="section-title mt-3">Made to be<br>held onto.</h2>
+                </div>
+                <div class="slider-controls" aria-label="Gallery controls">
+                    <button class="slider-button swiper-button-prev" type="button" aria-label="Previous photo"></button>
+                    <button class="slider-button swiper-button-next" type="button" aria-label="Next photo"></button>
+                </div>
+            </div>
+            <div class="swiper jmprint-slider">
+                <div id="gallery-slider" class="swiper-wrapper"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+        <section class="mx-auto max-w-7xl px-6 py-24 lg:px-10">
+            <div class="grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
+                <div>
+                    <p class="eyebrow text-cyanx">Why JMprint</p>
+                    <h2 class="section-title mt-3">The details are<br>the difference.</h2>
+                    <p class="mt-6 max-w-md leading-7 text-slate-600">We combine attentive craft with modern production
+                        to make print feel less like a commodity and more like an advantage.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-8 border-t border-ink/15 pt-8">
+                    <div><strong class="font-display text-5xl">12<span class="text-cyanx">+</span></strong>
+                        <p class="mt-2 text-sm text-slate-500">years making print matter</p>
+                    </div>
+                    <div><strong class="font-display text-5xl">98<span class="text-cyanx">%</span></strong>
+                        <p class="mt-2 text-sm text-slate-500">on-time project delivery</p>
+                    </div>
+                    <div><strong class="font-display text-5xl">24h</strong>
+                        <p class="mt-2 text-sm text-slate-500">express turnaround available</p>
+                    </div>
+                    <div><strong class="font-display text-5xl">1:1</strong>
+                        <p class="mt-2 text-sm text-slate-500">human support, always</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="border-y border-ink/10 bg-white px-6 py-24 lg:px-10" aria-labelledby="testimonials-title">
+            <div class="mx-auto max-w-7xl">
+                <div class="mb-12 max-w-2xl">
+                    <p class="eyebrow text-cyanx">Sample testimonials</p>
+                    <h2 id="testimonials-title" class="section-title mt-3">Good work,<br>good words.</h2>
+                    <p class="mt-5 text-sm leading-6 text-slate-500">Sample copy and avatars for layout preview. Replace these
+                        with verified client feedback before publishing.</p>
+                </div>
+                <div class="grid gap-5 md:grid-cols-3">
+                    <figure class="flex flex-col border border-ink/10 bg-paper p-7 sm:p-8">
+                        <div class="mb-6 flex items-center gap-4">
+                            <img class="h-12 w-12 rounded-full object-cover" src="https://i.pravatar.cc/96?img=47"
+                                alt="Sample client avatar" loading="lazy">
+                            <figcaption>
+                                <p class="font-display font-semibold">Sample client 01</p>
+                                <p class="mt-1 text-xs text-slate-500">Business cards &amp; flyers</p>
+                            </figcaption>
+                        </div>
+                        <blockquote class="flex-1 leading-7 text-slate-600">“The colors came out beautifully, and the
+                            whole order was ready when promised. The team made the process easy from start to finish.”</blockquote>
+                        <div class="mt-6 text-sm tracking-[.2em] text-cyanx" aria-label="5 out of 5 stars">★★★★★</div>
+                    </figure>
+                    <figure class="flex flex-col border border-ink/10 bg-paper p-7 sm:p-8">
+                        <div class="mb-6 flex items-center gap-4">
+                            <img class="h-12 w-12 rounded-full object-cover" src="https://i.pravatar.cc/96?img=12"
+                                alt="Sample client avatar" loading="lazy">
+                            <figcaption>
+                                <p class="font-display font-semibold">Sample client 02</p>
+                                <p class="mt-1 text-xs text-slate-500">Academic printing &amp; binding</p>
+                            </figcaption>
+                        </div>
+                        <blockquote class="flex-1 leading-7 text-slate-600">“My thesis was printed and bound with real
+                            care. The finish looks professional, and the team kept me updated throughout.”</blockquote>
+                        <div class="mt-6 text-sm tracking-[.2em] text-cyanx" aria-label="5 out of 5 stars">★★★★★</div>
+                    </figure>
+                    <figure class="flex flex-col border border-ink/10 bg-paper p-7 sm:p-8">
+                        <div class="mb-6 flex items-center gap-4">
+                            <img class="h-12 w-12 rounded-full object-cover" src="https://i.pravatar.cc/96?img=32"
+                                alt="Sample client avatar" loading="lazy">
+                            <figcaption>
+                                <p class="font-display font-semibold">Sample client 03</p>
+                                <p class="mt-1 text-xs text-slate-500">Event print &amp; signage</p>
+                            </figcaption>
+                        </div>
+                        <blockquote class="flex-1 leading-7 text-slate-600">“Our event banners looked crisp and vibrant.
+                            Great communication, quick turnaround, and exactly the quality we needed.”</blockquote>
+                        <div class="mt-6 text-sm tracking-[.2em] text-cyanx" aria-label="5 out of 5 stars">★★★★★</div>
+                    </figure>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer data-site-footer></footer>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

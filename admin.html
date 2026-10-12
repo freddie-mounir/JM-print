@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Quote Requests | JMprint Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { display: ['"Space Grotesk"', 'sans-serif'], body: ['"DM Sans"', 'sans-serif'] }, colors: { ink: '#101828', cyanx: '#087f8c', yellowx: '#ffd447', paper: '#f7f8f5' } } } };</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-paper text-ink font-body">
+    <header class="border-b border-white/10 bg-ink px-6 py-5 text-white lg:px-10">
+        <div class="mx-auto flex max-w-7xl items-center justify-between">
+            <a href="index.html" class="font-display text-xl font-semibold">JMprint <span class="text-yellowx">/ Admin</span></a>
+            <button id="logout-button" class="hidden text-sm text-white/70 hover:text-white" type="button">Sign out</button>
+        </div>
+    </header>
+    <main class="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+        <section id="login-panel" class="mx-auto max-w-md">
+            <p class="eyebrow text-cyanx">Admin access</p>
+            <h1 class="section-title mt-3">Quote requests.</h1>
+            <p class="mt-4 leading-7 text-slate-600">Sign in to view requests submitted through the JMprint website.</p>
+            <form id="login-form" class="mt-8 grid gap-5">
+                <label class="grid gap-2 text-sm font-semibold" for="admin-username">Username
+                    <input id="admin-username" class="input" name="username" autocomplete="username" required>
+                </label>
+                <label class="grid gap-2 text-sm font-semibold" for="admin-password">Password
+                    <input id="admin-password" class="input" type="password" name="password"
+                        autocomplete="current-password" required>
+                </label>
+                <p id="login-error" class="hidden text-sm text-red-700" role="alert"></p>
+                <button class="button button-yellow w-fit" type="submit">Sign in <span>↗</span></button>
+            </form>
+        </section>
+        <section id="requests-panel" class="hidden" aria-labelledby="requests-title">
+            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                    <p class="eyebrow text-cyanx">Inbox</p>
+                    <h1 id="requests-title" class="section-title mt-3">Quote requests.</h1>
+                </div>
+                <p id="request-count" class="text-sm text-slate-500"></p>
+            </div>
+            <p id="requests-error" class="mb-5 hidden text-sm text-red-700" role="alert"></p>
+            <div class="overflow-x-auto border border-ink/10 bg-white">
+                <table class="w-full min-w-[850px] border-collapse text-left text-sm">
+                    <thead class="bg-ink text-white">
+                        <tr>
+                            <th class="px-4 py-3 font-semibold">Received</th>
+                            <th class="px-4 py-3 font-semibold">Name</th>
+                            <th class="px-4 py-3 font-semibold">Mobile</th>
+                            <th class="px-4 py-3 font-semibold">Print type</th>
+                            <th class="px-4 py-3 font-semibold">Delivery address</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-body" class="divide-y divide-ink/10"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="admin.js"></script>
+</body>
+
+</html>

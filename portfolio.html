@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | JMprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { display: ['"Space Grotesk"', 'sans-serif'], body: ['"DM Sans"', 'sans-serif'] }, colors: { ink: '#101828', cyanx: '#087f8c', yellowx: '#ffd447', paper: '#f7f8f5' } } } };</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-paper text-ink font-body">
+    <header data-site-header></header>
+    <main>
+        <section class="page-hero page-hero-portfolio">
+            <div class="mx-auto max-w-7xl">
+                <p class="eyebrow text-yellowx">The work</p>
+                <h1
+                    class="mt-5 max-w-3xl font-display text-6xl font-semibold leading-none tracking-[-.06em] sm:text-8xl">
+                    A little<br>proof.</h1>
+                <p class="mt-7 max-w-xl text-lg leading-8 text-white/65">Campaigns, packaging, and everyday pieces
+                    designed to be seen, felt, and remembered.</p>
+            </div>
+        </section>
+        <section class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
+            <div class="mb-10 flex flex-wrap gap-2"><button class="filter-button active" data-filter="all">All
+                    work</button><button class="filter-button" data-filter="branding">Brand collateral</button><button
+                    class="filter-button" data-filter="packaging">Packaging</button><button class="filter-button"
+                    data-filter="large-format">Large format</button><button class="filter-button"
+                    data-filter="editorial">Editorial</button></div>
+            <div id="portfolio-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+        </section>
+    </main>
+    <footer data-site-footer></footer>
+    <script src="app.js"></script>
+</body>
+
+</html>

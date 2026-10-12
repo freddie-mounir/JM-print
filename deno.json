@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "start": "deno run --env-file=.env --allow-net --allow-read=. --allow-write=./data --allow-env=PORT,ADMIN_USERNAME,ADMIN_PASSWORD,SESSION_SECRET,COOKIE_SECURE server.ts"
+  },
+  "fmt": {
+    "lineWidth": 100,
+    "indentWidth": 4,
+    "semiColons": true,
+    "singleQuote": false
+  }
+}

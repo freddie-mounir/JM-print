@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Request a printing quote from JMprint.">
+    <title>Get a Quote | JMprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { display: ['"Space Grotesk"', 'sans-serif'], body: ['"DM Sans"', 'sans-serif'] }, colors: { ink: '#101828', cyanx: '#087f8c', yellowx: '#ffd447', paper: '#f7f8f5' } } } };</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-paper text-ink font-body">
+    <header data-site-header></header>
+    <main>
+        <section class="page-hero">
+            <div class="mx-auto max-w-7xl">
+                <p class="eyebrow text-yellowx">Make it tangible</p>
+                <h1 class="mt-5 max-w-4xl font-display text-6xl font-semibold leading-none tracking-[-.06em] sm:text-8xl">
+                    Let’s get<br>a number on it.
+                </h1>
+            </div>
+        </section>
+        <section class="mx-auto max-w-3xl px-6 py-24 lg:px-10">
+            <div>
+                <p class="eyebrow text-cyanx">Your quote</p>
+                <h2 class="section-title mt-3">Tell us where<br>to start.</h2>
+                <p id="quote-status" class="mt-6 hidden border border-ink/10 bg-white p-4 text-sm leading-6"
+                    role="status" aria-live="polite"></p>
+                <form id="quote-form" class="mt-10 grid gap-5" action="/api/quote" method="POST">
+                    <label class="grid gap-2 text-sm font-semibold" for="quote-name"><span>Name <span class="required-mark" aria-hidden="true">*</span></span>
+                        <input id="quote-name" class="input" type="text" name="name" required placeholder="Your name">
+                    </label>
+                    <label class="grid gap-2 text-sm font-semibold" for="quote-mobile"><span>Mobile <span class="required-mark" aria-hidden="true">*</span></span>
+                        <input id="quote-mobile" class="input" type="tel" name="mobile" required placeholder="+20 ...">
+                    </label>
+                    <label class="grid gap-2 text-sm font-semibold" for="quote-type">Type
+                        <select id="quote-type" class="input" name="type" required>
+                            <option value="">Choose print type</option>
+                            <option value="book">Book</option>
+                            <option value="booklet">Booklet</option>
+                            <option value="banner">Banner</option>
+                            <option value="business-cards">Business cards</option>
+                        </select>
+                    </label>
+                    <label class="grid gap-2 text-sm font-semibold" for="quote-address"><span>Address to deliver <span class="required-mark" aria-hidden="true">*</span></span>
+                        <textarea id="quote-address" class="input min-h-36" name="address" required
+                            placeholder="Where should we deliver your order?"></textarea>
+                    </label>
+                    <button class="button button-yellow w-fit" type="submit">Request quote <span>↗</span></button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <footer data-site-footer></footer>
+    <script src="app.js"></script>
+    <script src="quote.js"></script>
+</body>
+
+</html>

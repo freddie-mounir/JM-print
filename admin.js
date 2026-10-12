@@ -7,6 +7,14 @@ const requestsBody = document.querySelector("#requests-body");
 const requestCount = document.querySelector("#request-count");
 const logoutButton = document.querySelector("#logout-button");
 
+function getErrorMessage(error, fallback) {
+    if (typeof error === "string" && error.trim()) return error;
+    if (error && typeof error === "object" && typeof error.message === "string" && error.message.trim()) {
+        return error.message;
+    }
+    return fallback;
+}
+
 async function getRequests() {
     const response = await fetch("/api/requests", { headers: { Accept: "application/json" } });
     if (response.status === 401) {
@@ -68,11 +76,11 @@ loginForm.addEventListener("submit", async (event) => {
             }),
         });
         const result = await response.json();
-        if (!response.ok) throw new Error(result.error || "Sign in failed.");
+        if (!response.ok) throw new Error(getErrorMessage(result.error, "Sign in failed."));
         loginForm.reset();
         await getRequests();
     } catch (error) {
-        loginError.textContent = error.message || "Sign in failed. Please try again.";
+        loginError.textContent = getErrorMessage(error, "Sign in failed. Please try again.");
         loginError.classList.remove("hidden");
     }
 });

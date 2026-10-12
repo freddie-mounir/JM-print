@@ -1,7 +1,8 @@
-# JMprint quote requests
+# JM-print
 
-The Deno server hosts the static site, accepts quote requests, stores them in a local SQLite
-database, and provides a password-protected admin table at `/admin`.
+Website for printing solutions of JM print house. The Deno server hosts the static site, accepts
+quote requests, stores them in a local SQLite database, and provides a password-protected admin
+table at `/admin`.
 
 ## Run locally
 

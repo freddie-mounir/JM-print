@@ -23,10 +23,23 @@ table at `/admin`.
 4. Open `http://localhost:8000` for the website or `http://localhost:8000/admin` for the
    request table.
 
-The SQLite file is created at `data/quote-requests.sqlite3`. Back up that file and use a host
-with persistent disk storage when deploying. Run one server instance against the SQLite file.
-Set `COOKIE_SECURE=true` in production and serve the site over HTTPS. Keep `.env` and the
-database out of public/static hosting.
+The local Deno server stores data in `data/quote-requests.sqlite3`. The Vercel API instead
+connects to a remote Turso database using `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`; it creates
+the required tables automatically on its first API request.
+
+## Deploy to Vercel with Turso
+
+1. Create a database in Turso and generate a database auth token.
+2. In the Vercel project settings, add `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`,
+   `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and `SESSION_SECRET` for each environment you deploy.
+   Use an admin password of at least 14 characters and a randomly generated session secret of at
+   least 32 characters. Do not add these secrets to GitHub.
+3. Redeploy the project. Quote submissions and the admin request table will then use Turso.
+
+The quote request table is created automatically in Turso. The local SQLite database is not
+automatically copied; existing local requests must be migrated separately if you need them online.
+Keep `.env` and the local database out of public/static hosting. Vercel uses secure session
+cookies over HTTPS. The local Deno server continues to use SQLite and `COOKIE_SECURE=false`.
 
 The admin table shows the 500 most recent requests. Login sessions expire after eight hours,
-and repeated failed sign-in attempts are temporarily rate-limited.
+and repeated failed sign-in attempts are temporarily rate-limited using Turso on Vercel.

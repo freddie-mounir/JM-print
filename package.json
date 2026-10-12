@@ -1,0 +1,15 @@
+{
+    "name": "jmprint",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@libsql/client": "^0.15.15"
+    },
+    "devDependencies": {
+        "@types/node": "^22.19.0",
+        "typescript": "^5.9.3"
+    }
+}

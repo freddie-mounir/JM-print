@@ -8,12 +8,15 @@ const secureCookies = Deno.env.get("COOKIE_SECURE") !== "false";
 const sessionDurationSeconds = 8 * 60 * 60;
 const maxQuoteBodyBytes = 16_384;
 const quoteTypes = new Set(["book", "booklet", "banner", "business-cards"]);
+const quoteStatuses = new Set(["new", "pending", "done", "delivered"]);
 
 interface QuoteRequestRow extends Record<string, unknown> {
     id: number;
     name: string;
     mobile: string;
     type: string;
+    description: string;
+    status: string;
     address: string;
     createdAt: string;
 }
@@ -36,10 +39,22 @@ db.execute(`
         name TEXT NOT NULL,
         mobile TEXT NOT NULL,
         type TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'new',
         address TEXT NOT NULL,
         created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
     )
 `);
+const quoteRequestColumns = db.queryEntries<{ name: string }>("PRAGMA table_info(quote_requests)");
+if (!quoteRequestColumns.some((column) => column.name === "description")) {
+    db.execute("ALTER TABLE quote_requests ADD COLUMN description TEXT NOT NULL DEFAULT ''");
+}
+const updatedQuoteRequestColumns = db.queryEntries<{ name: string }>(
+    "PRAGMA table_info(quote_requests)",
+);
+if (!updatedQuoteRequestColumns.some((column) => column.name === "status")) {
+    db.execute("ALTER TABLE quote_requests ADD COLUMN status TEXT NOT NULL DEFAULT 'new'");
+}
 
 const sessionKey = await crypto.subtle.importKey(
     "raw",
@@ -186,18 +201,27 @@ async function handleQuote(request: Request): Promise<Response> {
     const name = getField(form, "name", 120);
     const mobile = getField(form, "mobile", 40);
     const type = getField(form, "type", 40);
+    const descriptionValue = form.get("description");
+    const description = descriptionValue === null
+        ? ""
+        : typeof descriptionValue === "string"
+        ? descriptionValue.trim()
+        : null;
     const address = getField(form, "address", 2000);
-    if (!name || !mobile || !type || !quoteTypes.has(type) || !address) {
+    if (
+        !name || !mobile || !type || !quoteTypes.has(type) || description === null ||
+        description.length > 2000 || !address
+    ) {
         return json({ error: "Please check the form fields and try again." }, 400);
     }
 
     db.query(
-        "INSERT INTO quote_requests (name, mobile, type, address) VALUES (?, ?, ?, ?)",
-        [name, mobile, type, address],
+        "INSERT INTO quote_requests (name, mobile, type, description, address) VALUES (?, ?, ?, ?, ?)",
+        [name, mobile, type, description, address],
     );
 
     if (request.headers.get("Accept")?.includes("application/json")) {
-        return json({ ok: true }, 201);
+        return json({ ok: true, description }, 201);
     }
     return new Response(null, { status: 303, headers: { Location: "/quote.html?submitted=1" } });
 }
@@ -296,10 +320,51 @@ Deno.serve({ port }, async (request, info) => {
         if (!sameOrigin(request)) return json({ error: "Invalid request origin." }, 403);
         return json({ ok: true }, 200, { "Set-Cookie": cookie("", 0) });
     }
-    if (url.pathname === "/api/requests" && request.method === "GET") {
+    if (
+        url.pathname === "/api/requests" &&
+        ["GET", "PATCH", "DELETE"].includes(request.method)
+    ) {
         if (!await hasValidSession(request)) return json({ error: "Authentication required." }, 401);
+        if (request.method === "PATCH" || request.method === "DELETE") {
+            if (!sameOrigin(request)) return json({ error: "Invalid request origin." }, 403);
+            const id = Number(url.searchParams.get("id"));
+            if (!Number.isSafeInteger(id) || id < 1) {
+                return json({ error: "A valid request ID is required." }, 400);
+            }
+
+            if (request.method === "DELETE") {
+                const deleted = db.queryEntries<{ id: number }>(
+                    "DELETE FROM quote_requests WHERE id = ? RETURNING id",
+                    [id],
+                );
+                if (deleted.length === 0) return json({ error: "Quote request not found." }, 404);
+                return json({ ok: true });
+            }
+
+            const body = await readLimitedBody(request, 1024);
+            if (!body) return json({ error: "Invalid status update." }, 400);
+            let update: unknown;
+            try {
+                update = JSON.parse(new TextDecoder().decode(body));
+            } catch {
+                return json({ error: "Invalid status update." }, 400);
+            }
+            if (
+                typeof update !== "object" || update === null || !("status" in update) ||
+                typeof update.status !== "string" || !quoteStatuses.has(update.status)
+            ) {
+                return json({ error: "Choose a valid quote status." }, 400);
+            }
+            const updated = db.queryEntries<{ id: number; status: string }>(
+                "UPDATE quote_requests SET status = ? WHERE id = ? RETURNING id, status",
+                [update.status, id],
+            );
+            if (updated.length === 0) return json({ error: "Quote request not found." }, 404);
+            return json({ ok: true, status: updated[0].status });
+        }
+
         const rows = db.queryEntries<QuoteRequestRow>(
-            "SELECT id, name, mobile, type, address, created_at AS createdAt " +
+            "SELECT id, name, mobile, type, description, status, address, created_at AS createdAt " +
                 "FROM quote_requests ORDER BY id DESC LIMIT 500",
         );
         return json(rows);

@@ -4,12 +4,15 @@ import process from "node:process";
 const sessionDurationSeconds = 8 * 60 * 60;
 const maxQuoteBodyBytes = 16_384;
 const quoteTypes = new Set(["book", "booklet", "banner", "business-cards"]);
+const quoteStatuses = new Set(["new", "pending", "done", "delivered"]);
 
 interface QuoteRequestRow {
     id: number;
     name: string;
     mobile: string;
     type: string;
+    description: string;
+    status: string;
     address: string;
     createdAt: string;
 }
@@ -43,6 +46,8 @@ function getDatabase(): Promise<Client> {
                     name TEXT NOT NULL,
                     mobile TEXT NOT NULL,
                     type TEXT NOT NULL,
+                    description TEXT NOT NULL DEFAULT '',
+                    status TEXT NOT NULL DEFAULT 'new',
                     address TEXT NOT NULL,
                     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
                 )
@@ -54,7 +59,36 @@ function getDatabase(): Promise<Client> {
                     locked_until INTEGER NOT NULL
                 )
             `),
-        ]).then(() => undefined).catch((error: unknown) => {
+        ]).then(async () => {
+            const columns = await client.execute("PRAGMA table_info(quote_requests)");
+            if (!columns.rows.some((column) => column.name === "description")) {
+                try {
+                    await client.execute(
+                        "ALTER TABLE quote_requests ADD COLUMN description TEXT NOT NULL DEFAULT ''",
+                    );
+                } catch (error) {
+                    const updatedColumns = await client.execute(
+                        "PRAGMA table_info(quote_requests)",
+                    );
+                    if (!updatedColumns.rows.some((column) => column.name === "description")) {
+                        throw error;
+                    }
+                }
+            }
+            const updatedColumns = await client.execute("PRAGMA table_info(quote_requests)");
+            if (!updatedColumns.rows.some((column) => column.name === "status")) {
+                try {
+                    await client.execute(
+                        "ALTER TABLE quote_requests ADD COLUMN status TEXT NOT NULL DEFAULT 'new'",
+                    );
+                } catch (error) {
+                    const finalColumns = await client.execute("PRAGMA table_info(quote_requests)");
+                    if (!finalColumns.rows.some((column) => column.name === "status")) {
+                        throw error;
+                    }
+                }
+            }
+        }).catch((error: unknown) => {
             schemaInitialization = undefined;
             throw error;
         });
@@ -216,19 +250,28 @@ async function handleQuote(request: Request): Promise<Response> {
     const name = getField(form, "name", 120);
     const mobile = getField(form, "mobile", 40);
     const type = getField(form, "type", 40);
+    const descriptionValue = form.get("description");
+    const description = descriptionValue === null
+        ? ""
+        : typeof descriptionValue === "string"
+        ? descriptionValue.trim()
+        : null;
     const address = getField(form, "address", 2000);
-    if (!name || !mobile || !type || !quoteTypes.has(type) || !address) {
+    if (
+        !name || !mobile || !type || !quoteTypes.has(type) || description === null ||
+        description.length > 2000 || !address
+    ) {
         return json({ error: "Please check the form fields and try again." }, 400);
     }
 
     const db = await getDatabase();
     await db.execute({
-        sql: "INSERT INTO quote_requests (name, mobile, type, address) VALUES (?, ?, ?, ?)",
-        args: [name, mobile, type, address],
+        sql: "INSERT INTO quote_requests (name, mobile, type, description, address) VALUES (?, ?, ?, ?, ?)",
+        args: [name, mobile, type, description, address],
     });
 
     if (request.headers.get("Accept")?.includes("application/json")) {
-        return json({ ok: true }, 201);
+        return json({ ok: true, description }, 201);
     }
     return new Response(null, { status: 303, headers: { Location: "/quote.html?submitted=1" } });
 }
@@ -321,8 +364,46 @@ async function handleLogin(request: Request): Promise<Response> {
 async function handleRequests(request: Request): Promise<Response> {
     if (!await hasValidSession(request)) return json({ error: "Authentication required." }, 401);
     const db = await getDatabase();
+    if (request.method === "PATCH" || request.method === "DELETE") {
+        if (!sameOrigin(request)) return json({ error: "Invalid request origin." }, 403);
+        const id = Number(new URL(request.url).searchParams.get("id"));
+        if (!Number.isSafeInteger(id) || id < 1) {
+            return json({ error: "A valid request ID is required." }, 400);
+        }
+
+        if (request.method === "DELETE") {
+            const result = await db.execute({
+                sql: "DELETE FROM quote_requests WHERE id = ?",
+                args: [id],
+            });
+            if (result.rowsAffected === 0) return json({ error: "Quote request not found." }, 404);
+            return json({ ok: true });
+        }
+
+        const body = await readLimitedBody(request, 1024);
+        if (!body) return json({ error: "Invalid status update." }, 400);
+        let update: unknown;
+        try {
+            update = JSON.parse(new TextDecoder().decode(body));
+        } catch {
+            return json({ error: "Invalid status update." }, 400);
+        }
+        if (
+            typeof update !== "object" || update === null || !("status" in update) ||
+            typeof update.status !== "string" || !quoteStatuses.has(update.status)
+        ) {
+            return json({ error: "Choose a valid quote status." }, 400);
+        }
+        const result = await db.execute({
+            sql: "UPDATE quote_requests SET status = ? WHERE id = ?",
+            args: [update.status, id],
+        });
+        if (result.rowsAffected === 0) return json({ error: "Quote request not found." }, 404);
+        return json({ ok: true, status: update.status });
+    }
+
     const result = await db.execute(
-        `SELECT id, name, mobile, type, address, created_at AS createdAt
+        `SELECT id, name, mobile, type, description, status, address, created_at AS createdAt
          FROM quote_requests ORDER BY id DESC LIMIT 500`,
     );
     const requests: QuoteRequestRow[] = result.rows.map((row) => ({
@@ -330,6 +411,8 @@ async function handleRequests(request: Request): Promise<Response> {
         name: String(row.name),
         mobile: String(row.mobile),
         type: String(row.type),
+        description: String(row.description),
+        status: String(row.status),
         address: String(row.address),
         createdAt: String(row.createdAt),
     }));
@@ -344,9 +427,12 @@ export async function handleApiRequest(route: ApiRoute, request: Request): Promi
             if (!sameOrigin(request)) return json({ error: "Invalid request origin." }, 403);
             return json({ ok: true }, 200, { "Set-Cookie": cookie("", 0) });
         }
-        if (route === "requests" && request.method === "GET") return await handleRequests(request);
+        if (
+            route === "requests" &&
+            ["GET", "PATCH", "DELETE"].includes(request.method)
+        ) return await handleRequests(request);
         return json({ error: "Method not allowed." }, 405, {
-            Allow: route === "requests" ? "GET" : "POST",
+            Allow: route === "requests" ? "GET, PATCH, DELETE" : "POST",
         });
     } catch (error) {
         console.error(`API route ${route} failed:`, error);

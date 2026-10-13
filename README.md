@@ -25,7 +25,9 @@ table at `/admin`.
 
 The local Deno server stores data in `data/quote-requests.sqlite3`. The Vercel API instead
 connects to a remote Turso database using `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`; it creates
-the required tables automatically on its first API request.
+the required tables automatically on its first API request. Both backends add new request columns
+to existing databases automatically, preserving previous requests with an empty description and
+the `new` status. Admins can update a request to pending, done, or delivered, or delete it.
 
 ## Deploy to Vercel with Turso
 

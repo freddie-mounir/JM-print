@@ -17,13 +17,36 @@
 </head>
 
 <body class="bg-paper text-ink font-body">
-    <header class="border-b border-white/10 bg-ink px-6 py-5 text-white lg:px-10">
-        <div class="mx-auto flex max-w-7xl items-center justify-between">
-            <a href="index.html" class="font-display text-xl font-semibold">JMprint <span class="text-yellowx">/ Admin</span></a>
+    <header class="fixed top-0 z-50 w-full border-b border-white/10 bg-ink/90 text-white backdrop-blur-md">
+        <nav class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
+            <a href="index.html" aria-label="JMprint home">
+                <img src="assests/jmprint.jpg" alt="JMprint" class="h-16 w-auto max-w-[220px] object-contain">
+            </a>
+            <div class="hidden items-center gap-8 md:flex">
+                <a class="text-sm text-white/70 hover:text-white" href="index.html">Home</a>
+                <a class="text-sm text-white/70 hover:text-white" href="services.html">Services</a>
+                <a class="text-sm text-white/70 hover:text-white" href="portfolio.html">Portfolio</a>
+                <a class="text-sm text-white/70 hover:text-white" href="contact.html">Contact</a>
+                <a href="quote.html" class="button button-yellow ml-2 !px-4 !py-3">Get a quote <span>↗</span></a>
+                <a href="admin.html" class="button button-ghost !px-4 !py-3">Admin login</a>
+            </div>
             <button id="logout-button" class="hidden text-sm text-white/70 hover:text-white" type="button">Sign out</button>
+            <button class="text-2xl md:hidden" aria-label="Open menu" aria-expanded="false"
+                aria-controls="admin-mobile-menu" data-menu-button>≡</button>
+        </nav>
+        <div id="admin-mobile-menu" data-mobile-menu
+            class="hidden border-t border-white/10 bg-ink px-6 py-5 md:hidden">
+            <div class="grid gap-4">
+                <a class="text-sm text-white/80" href="index.html">Home</a>
+                <a class="text-sm text-white/80" href="services.html">Services</a>
+                <a class="text-sm text-white/80" href="portfolio.html">Portfolio</a>
+                <a class="text-sm text-white/80" href="contact.html">Contact</a>
+                <a class="text-sm text-white/80" href="quote.html">Get a quote</a>
+                <a class="text-sm text-white/80" href="admin.html">Admin login</a>
+            </div>
         </div>
     </header>
-    <main class="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+    <main class="mx-auto max-w-7xl px-6 pb-16 pt-32 lg:px-10">
         <section id="login-panel" class="mx-auto max-w-md">
             <p class="eyebrow text-cyanx">Admin access</p>
             <h1 class="section-title mt-3">Quote requests.</h1>
@@ -50,14 +73,17 @@
             </div>
             <p id="requests-error" class="mb-5 hidden text-sm text-red-700" role="alert"></p>
             <div class="overflow-x-auto border border-ink/10 bg-white">
-                <table class="w-full min-w-[850px] border-collapse text-left text-sm">
+                <table class="w-full min-w-[1200px] border-collapse text-left text-sm">
                     <thead class="bg-ink text-white">
                         <tr>
                             <th class="px-4 py-3 font-semibold">Received</th>
                             <th class="px-4 py-3 font-semibold">Name</th>
                             <th class="px-4 py-3 font-semibold">Mobile</th>
                             <th class="px-4 py-3 font-semibold">Print type</th>
+                            <th class="px-4 py-3 font-semibold">Description</th>
                             <th class="px-4 py-3 font-semibold">Delivery address</th>
+                            <th class="px-4 py-3 font-semibold">Status</th>
+                            <th class="px-4 py-3 font-semibold">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="requests-body" class="divide-y divide-ink/10"></tbody>
@@ -65,6 +91,7 @@
             </div>
         </section>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="admin.js"></script>
 </body>
 

@@ -9,7 +9,7 @@ if (quoteForm && quoteStatus) {
     };
 
     if (new URLSearchParams(location.search).has("submitted")) {
-        showStatus("Thanks! Your quote request has been received. We’ll be in touch soon.");
+        showStatus("Your quote request was sent successfully. We’ll be in touch soon.");
     }
 
     quoteForm.addEventListener("submit", async (event) => {
@@ -31,7 +31,7 @@ if (quoteForm && quoteStatus) {
             }
 
             quoteForm.reset();
-            showStatus("Thanks! Your quote request has been received. We’ll be in touch soon.");
+            showStatus("Your quote request was sent successfully. We’ll be in touch soon.");
         } catch (error) {
             showStatus(error.message || "We couldn’t submit your request. Please try again.", true);
         } finally {

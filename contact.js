@@ -27,7 +27,7 @@ if (contactForm && contactStatus) {
             }
 
             contactForm.reset();
-            showStatus("Thanks! Your inquiry has been received. We’ll be in touch soon.");
+            showStatus("Your inquiry was sent successfully. We’ll be in touch soon.");
         } catch (error) {
             showStatus(error.message || "We couldn’t send your inquiry. Please try again.", true);
         } finally {

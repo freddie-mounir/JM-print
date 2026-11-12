@@ -241,16 +241,18 @@ const staticFiles = new Map<string, string>([
     ["/assests/jmprint.jpg", "./assests/jmprint.jpg"],
     ["/assests/jmprint-hero-poster.jpg", "./assests/jmprint-hero-poster.jpg"],
     ["/assests/jmprint-hero.mp4", "./assests/jmprint-hero.mp4"],
-    ["/assests/fb-work-1.jpg", "./assests/fb-work-1.jpg"],
-    ["/assests/fb-work-3.jpg", "./assests/fb-work-3.jpg"],
-    ["/assests/fb-work-4.jpg", "./assests/fb-work-4.jpg"],
-    ["/assests/fb-work-5.jpg", "./assests/fb-work-5.jpg"],
-    ["/assests/fb-work-6.jpg", "./assests/fb-work-6.jpg"],
+    ["/assests/guest%20book%201.jpeg", "./assests/guest book 1.jpeg"],
+    ["/assests/guest%20book%202.jpeg", "./assests/guest book 2.jpeg"],
+    ["/assests/jm-print-mugs.jpg", "./assests/jm-print-mugs.jpg"],
+    ["/assests/jm-print-gifts.jpg", "./assests/jm-print-gifts.jpg"],
+    ["/assests/jm-print-watches.jpg", "./assests/jm-print-watches.jpg"],
+    ["/assests/jm-print-T-shirts.jpg", "./assests/jm-print-T-shirts.jpg"],
 ]);
 const contentTypes: Record<string, string> = {
     ".css": "text/css; charset=utf-8",
     ".html": "text/html; charset=utf-8",
     ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
     ".js": "text/javascript; charset=utf-8",
     ".mp4": "video/mp4",
 };

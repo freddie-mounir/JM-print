@@ -31,7 +31,9 @@
             <div>
                 <p class="eyebrow text-cyanx">Your brief</p>
                 <h2 class="section-title mt-3">Tell us what<br>you’re making.</h2>
-                <form class="mt-10 grid gap-5" action="/api/contact" method="POST">
+                <p id="contact-status" class="mt-6 hidden border border-ink/10 bg-white p-4 text-sm leading-6"
+                    role="status" aria-live="polite"></p>
+                <form id="contact-form" class="mt-10 grid gap-5" action="/api/contact" method="POST">
                     <div class="grid gap-5 sm:grid-cols-2"><label class="grid gap-2 text-sm font-semibold">Name<input
                                 class="input" type="text" name="name" required placeholder="Your name"></label><label
                             class="grid gap-2 text-sm font-semibold">Email<input class="input" type="email" name="email"
@@ -78,6 +80,7 @@
     </main>
     <footer data-site-footer></footer>
     <script src="app.js"></script>
+    <script src="contact.js"></script>
 </body>
 
 </html>

@@ -4,6 +4,13 @@ import process from "node:process";
 const sessionDurationSeconds = 8 * 60 * 60;
 const maxQuoteBodyBytes = 16_384;
 const quoteTypes = new Set(["book", "booklet", "banner", "business-cards"]);
+const contactServices = new Set([
+    "Digital printing",
+    "Offset printing",
+    "Large format",
+    "Packaging",
+    "Not sure yet",
+]);
 const quoteStatuses = new Set(["new", "pending", "done", "delivered"]);
 
 interface QuoteRequestRow {
@@ -22,7 +29,7 @@ interface Credentials {
     password: string;
 }
 
-type ApiRoute = "quote" | "login" | "logout" | "requests";
+type ApiRoute = "quote" | "contact" | "login" | "logout" | "requests";
 
 let database: Client | undefined;
 let schemaInitialization: Promise<void> | undefined;
@@ -276,6 +283,50 @@ async function handleQuote(request: Request): Promise<Response> {
     return new Response(null, { status: 303, headers: { Location: "/quote.html?submitted=1" } });
 }
 
+async function handleContact(request: Request): Promise<Response> {
+    if (!sameOrigin(request)) return json({ error: "Invalid request origin." }, 403);
+    const body = await readLimitedBody(request, maxQuoteBodyBytes);
+    if (!body) return json({ error: "Request is too large or empty." }, 413);
+
+    let form: FormData;
+    try {
+        const headers = new Headers(request.headers);
+        headers.delete("Content-Length");
+        form = await new Request(request.url, {
+            method: request.method,
+            headers,
+            body,
+        }).formData();
+    } catch {
+        return json({ error: "Please submit the contact form using the website." }, 400);
+    }
+
+    const name = getField(form, "name", 120);
+    const email = getField(form, "email", 254);
+    const phoneValue = form.get("phone");
+    const phone = typeof phoneValue === "string" ? phoneValue.trim() : null;
+    const service = getField(form, "service", 40);
+    const message = getField(form, "message", 2000);
+    if (
+        !name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+        phone === null || phone.length > 40 || !service || !contactServices.has(service) ||
+        !message
+    ) {
+        return json({ error: "Please check the form fields and try again." }, 400);
+    }
+
+    const db = await getDatabase();
+    await db.execute({
+        sql: "INSERT INTO quote_requests (name, mobile, type, description, address) VALUES (?, ?, ?, ?, ?)",
+        args: [name, phone, `Contact inquiry: ${service}`, message, email],
+    });
+
+    if (request.headers.get("Accept")?.includes("application/json")) {
+        return json({ ok: true }, 201);
+    }
+    return new Response(null, { status: 303, headers: { Location: "/contact.html?submitted=1" } });
+}
+
 function constantTimeEqual(first: string, second: string): boolean {
     const encoder = new TextEncoder();
     const firstBytes = encoder.encode(first);
@@ -422,6 +473,7 @@ async function handleRequests(request: Request): Promise<Response> {
 export async function handleApiRequest(route: ApiRoute, request: Request): Promise<Response> {
     try {
         if (route === "quote" && request.method === "POST") return await handleQuote(request);
+        if (route === "contact" && request.method === "POST") return await handleContact(request);
         if (route === "login" && request.method === "POST") return await handleLogin(request);
         if (route === "logout" && request.method === "POST") {
             if (!sameOrigin(request)) return json({ error: "Invalid request origin." }, 403);

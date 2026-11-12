@@ -51,7 +51,7 @@ async function getRequests() {
         const cell = document.createElement("td");
         cell.className = "px-4 py-8 text-center text-slate-500";
         cell.colSpan = 8;
-        cell.textContent = "No quote requests yet.";
+        cell.textContent = "No requests yet.";
         row.append(cell);
         requestsBody.append(row);
         return;
@@ -96,7 +96,7 @@ async function getRequests() {
         const deleteButton = document.createElement("button");
         deleteButton.className = "delete-request-button";
         deleteButton.type = "button";
-        deleteButton.setAttribute("aria-label", `Delete quote request from ${request.name}`);
+        deleteButton.setAttribute("aria-label", `Delete request from ${request.name}`);
         deleteButton.title = "Delete request";
         deleteButton.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-.9 14H5.9L5 6m4 4v6m6-6v6"/></svg>`;
         deleteButton.dataset.deleteRequestId = String(request.id);
@@ -140,7 +140,7 @@ requestsBody.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-delete-request-id]");
     if (!button) return;
     const confirmation = await Swal.fire({
-        title: "Delete quote request?",
+        title: "Delete request?",
         text: "This action cannot be undone.",
         icon: "warning",
         showCancelButton: true,
